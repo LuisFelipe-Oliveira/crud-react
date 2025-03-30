@@ -1,0 +1,68 @@
+@use "../global.scss";
+
+section {
+  &.sec-form {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .boxFormCreate {
+      width: 100%;
+      max-width: 50rem;
+      padding: 2rem;
+      background-color: global.$c03;
+      border-radius: 10px;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+
+      form {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+
+        input,
+        select {
+          padding: 0.75rem;
+          font-size: 1rem;
+          border: 1px solid global.$c03;
+          border-radius: 5px;
+          background-color: global.$c00;
+          color: global.$c01;
+
+          &:focus {
+            outline: none;
+          }
+        }
+
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+        }
+
+        input[type="number"] {
+          -moz-appearance: textfield;
+        }
+
+        .contentInput {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+
+          .btn-submit {
+            width: 30%;
+            padding: 0.5rem;
+            border-radius: 2rem;
+            cursor: pointer;
+            margin: 0 auto;
+            border: none;
+            background-color: global.$c00;
+            font-size: 1.25rem;
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,30 @@
+// Colors
+$c00: #ffffff;
+$c01: #000000;
+$c02: #121212;
+$c03: #292828;
+
+// Fonts
+$font-Montserrat: 'Montserrat', sans-serif;
+
+// Global
+* {
+  font-family: $font-Montserrat;
+}
+
+body {
+  background-color: $c02 !important;
+}
+
+// Sections 
+section {
+  .subtitle {
+    font-size: 2rem;
+    color: $c00;
+  }
+
+  .text {
+    font-size: 1.125rem;
+    color: $c03;
+  }
+}
