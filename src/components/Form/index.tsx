@@ -2,6 +2,9 @@ import "../../styles/components/form.scss";
 import { createProd, updateProd } from "../../service/apiMethods";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+import { FormInput } from "../FormInput";
+import { FormSelect } from "../FormSelect";
 
 //Interface de produtos
 interface Product {
@@ -18,7 +21,7 @@ interface FormProps {
   title: string;
   buttonForm: string;
   productId?: number;
-  existingProduct?: Product
+  existingProduct?: Product;
 }
 
 export const Form: React.FC<FormProps> = ({ title, buttonForm, productId, existingProduct }) => {
@@ -49,52 +52,82 @@ export const Form: React.FC<FormProps> = ({ title, buttonForm, productId, existi
     const { name, value } = e.target;
     setProduct((prevProduct) => ({
       ...prevProduct,
-      [name]: ["price", "status", "stock_quantity"].includes(name) ? Number(value) : value,
+      [name]: ["price", "stock_quantity"].includes(name) ? (value === "" ? 0 : Number(value)) : value,
     }));
   };
 
-  //Função para enviar o formulário de cadastro ou update de produto defidinindo de acordo com a existencia do productId
+  /// Função para enviar o formulário de cadastro ou update de produto de acordo com a existencia do productId
   const handlerSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("Dados do produto antes de enviar para a API:", product);
 
-    const productData = {
-      ...product,
-    };
+    const productData = { ...product };
 
     try {
-      if (productId) {
-        await updateProd(productId, productData);
-        console.log("Produto atualizado com sucesso!");
+      // Validação da quantidade de estoque baseada no status
+      if (productData.status === 1 && productData.stock_quantity <= 0) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Erro',
+          text: 'O produto em estoque deve ter uma quantidade maior que zero.',
+        });
+      } else if (productData.status === 2 && productData.stock_quantity !== 0) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Erro',
+          text: 'O produto em reposição deve ter uma quantidade igual a zero.',
+        });
+      } else if (productData.status === 3 && productData.stock_quantity !== 0) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Erro',
+          text: 'O produto em falta deve ter uma quantidade igual a zero.',
+        });
       } else {
-        await createProd(productData);
-        console.log("Produto cadastrado com sucesso!");
+        // Enviar para a API
+        if (productId) {
+          await updateProd(productId, productData);
+          Swal.fire({
+            icon: 'success',
+            title: 'Sucesso',
+            text: 'Produto atualizado com sucesso!',
+          });
+          navigate("/listProd", {replace: true});
+        } else {
+          await createProd(productData);
+          Swal.fire({
+            icon: 'success',
+            title: 'Sucesso',
+            text: 'Produto cadastrado com sucesso!',
+          });
+          navigate("/listProd");
+        }
       }
-
-      navigate("/");
     } catch (error) {
       console.error("Erro ao enviar produto:", error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Erro',
+        text: 'Ocorreu um erro ao tentar cadastrar/atualizar o produto.',
+      });
     }
-  }
+  };
 
   return (
     <section className="container sec-form">
       <div className="boxFormCreate">
-        <h2 className="subtitle">
+        <h2 className="subtitle text-center mb-3">
           {title}
         </h2>
         <form onSubmit={handlerSubmit} method="POST" className="formCreate">
-          <input type="text" value={product.name || ""} onChange={handleChange} name="name" placeholder="nome" required />
-          <input type="text" value={product.description || ""} onChange={handleChange} name="description" placeholder="Descrição" required />
-          <input type="number" value={product.price || 0} onChange={handleChange} name="price" placeholder="Preço" required />
-          <select name="status" id="status" value={product.status || 0} onChange={handleChange} required>
-            <option value="">Selecione um status</option>
-            <option value={1}>Em estoque</option>
-            <option value={2}>Em reposição</option>
-            <option value={3}>Em falta</option>
-          </select>
-          <input type="number" value={product.stock_quantity || 0} onChange={handleChange} name="stock_quantity" placeholder="Estoque" required />
-          <div className="contentInput">
-            <button type="button" className="btn-submit" onClick={() => navigate("/")}>Voltar</button>
+          <FormInput type="text" name="name" value={product.name} onChange={handleChange} nameLabel="Nome" placeholder="Informe o nome do produto" htmlFor="name" required />
+          <FormInput type="text" name="description" value={product.description} onChange={handleChange} placeholder="Informe a descrição do produto"  nameLabel="Descrição" htmlFor="description" required />
+          <FormInput type="number" name="price" value={product.price} onChange={handleChange} nameLabel="Preço" htmlFor="price" required />
+          <FormSelect name="status" value={product.status} onChange={handleChange} htmlFor="status" nameLabel="Status do produto" required />
+          <FormInput type="number" name="stock_quantity" value={product.stock_quantity} onChange={handleChange} nameLabel="Qtd em estoque" htmlFor="stock_quantity" required />
+
+          <div className="contentInput mt-4">
+            <button type="button" className="btn-submit" onClick={() => navigate("/listProd")}>Voltar</button>
             <button type="submit" className="btn-submit">{buttonForm}</button>
           </div>
         </form>

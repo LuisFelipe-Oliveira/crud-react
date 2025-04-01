@@ -1,0 +1,26 @@
+@use "../global.scss";
+
+header {
+  height: 100%;
+  width: 100%;
+  padding: 1rem;
+  background-color: global.$c03;
+
+  .contentLogo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 1rem;
+
+    h1.title {
+      color: global.$c00;
+    }
+    
+    img {
+      filter: invert(1);
+      max-width: 5%;
+      max-height: 5%;
+    }
+  }
+}

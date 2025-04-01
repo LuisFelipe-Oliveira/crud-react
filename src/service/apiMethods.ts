@@ -33,10 +33,9 @@ export const getProdId = async (id: number): Promise<Product> => {
 };
 export const login = async (email: string, password: string) => {
   try {
-    const response = await api.post<Token>('/auth/login', {email, password});
+    const response = await api.post<Token>('/auth/login', { email, password });
 
-    localStorage.setItem('email', email);
-    localStorage.setItem('password', password);
+    // Armazena apenas o token no localStorage
     localStorage.setItem('access_token', response.data.access_token);
 
     return response.data;
@@ -44,4 +43,4 @@ export const login = async (email: string, password: string) => {
     console.error("Erro ao fazer login:", error);
     throw error;
   }
-}
+};

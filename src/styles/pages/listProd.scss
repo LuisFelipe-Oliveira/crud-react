@@ -1,0 +1,16 @@
+@use "../global.scss";
+
+section {
+  &.container {
+    &.sec-list {
+      padding: 2rem
+    }
+    .title {
+      font-size: 3.75rem;
+    }
+
+    .table {
+      border: 1rem solid global.$c04;
+    }
+  }
+}
