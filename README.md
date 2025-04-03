@@ -2,7 +2,7 @@
 
 ## Descrição
 
-Este é um projeto de CRUD (Create, Read, Update, Delete) desenvolvido em React com TypeScript, que interage com uma API externa para gerenciar produtos. O sistema realiza automaticamente a autenticação via email e senha ao se conectar com a API.
+Este é um projeto de CRUD (Create, Read, Update, Delete) desenvolvido em React com TypeScript, que interage com uma API externa para gerenciar produtos.
 
 As principais funcionalidades incluem:
 - Autenticação de usuários
@@ -21,6 +21,7 @@ O projeto utiliza **SCSS** e **Bootstrap** para estilização e **Axios** para a
 - [Bootstrap](https://getbootstrap.com/)
 - [Axios](https://axios-http.com/)
 - [SweetAlert2](https://sweetalert2.github.io/)
+- [Jest](https://jestjs.io/pt-BR/)
 
 ## Como Executar o Projeto
 
@@ -50,7 +51,7 @@ A aplicação estará disponível em [http://localhost:3000](http://localhost:30
 
 ## Uso da API
 
-O projeto consome uma API para gerenciar produtos. Abaixo estão os endpoints utilizados:
+O projeto consome uma API para gerenciar produtos. A API possui uma documentação interna que descreve os endpoints e respostas. Para acessar os recursos, é necessário autenticar-se com login e senha. Abaixo estão os principais endpoints utilizados:
 
 - **Login:** `POST /auth/login` 
 - **Listar produtos:** `POST /product`
@@ -58,8 +59,6 @@ O projeto consome uma API para gerenciar produtos. Abaixo estão os endpoints ut
 - **Criar produto:** `POST /product`
 - **Atualizar produto:** `PUT /product/update`
 - **Excluir produto:** `DELETE /product/delete`
-
-O login é feito automaticamente no código ao iniciar a aplicação, sem necessidade de interação manual.
 
 ## Estrutura do Projeto
 
@@ -80,10 +79,51 @@ O login é feito automaticamente no código ao iniciar a aplicação, sem necess
 │   │   ├── axios.ts       # Arquivo que contém a configuração padrão da API (baseURL, headers, etc.)
 │   ├── App.tsx      # Componente principal
 │   ├── index.tsx    # Ponto de entrada do React
-│   
+│   ├── test/        # Testes automatizados com Jest
+│
 ├── public/          # Arquivos públicos
 ├── package.json     # Dependências e scripts
 ├── README.md        # Documentação
+```
+
+## Testes Unitários com Jest
+
+Os testes são focados nas páginas principais, mas como essas páginas carregam diversos componentes internos, os testes garantem indiretamente o funcionamento correto da interface.
+
+### Como Executar os Testes
+
+Para rodar os testes, utilize o comando:
+```bash
+npm test
+# ou
+yarn test
+```
+
+### Estrutura dos Arquivos de Teste
+Os arquivos de teste seguem a estrutura:
+```
+/test
+│── Login.spec.ts      # Testes para a tela de login
+│── CreateProd.spec.ts      # Testes para a tela de criação de produto
+│── ListProd.spec.ts      # Testes para a tela de listagem de produtos
+│── UpdateProd.spec.ts      # Testes para a tela de update do produto
+```
+
+### Exemplo de Teste
+Aqui está um exemplo simples de teste para garantir que a página de login renderiza corretamente:
+```ts
+import React from "react";
+import { render, screen } from "@testing-library/react";
+import { BrowserRouter } from "react-router-dom";
+import Login from "../pages/Login";
+
+describe("Login", () => {
+  it("deve exibir o título da tela de login", () => {
+    render(React.createElement(Login), { wrapper: BrowserRouter });
+  const title = screen.getByText(/Login/i);
+  expect(title).toBeTruthy();
+  });
+});
 ```
 
 ### Documentação dos Componentes
@@ -169,3 +209,4 @@ O `FormSelect` é um componente reutilizável para seleção de status de produt
 - O `Form` é o componente mais complexo e centraliza as ações de cadastro e edição de produtos.
 - O `Footer` e o `Header` são componentes estáticos usados para estruturar a interface.
 - Os componentes `FormInput` e `FormSelect` são reutilizáveis e podem ser usados em outros formulários.
+- Ao tentar atualizar um produto e definir a quantidade como 0, a validação pode permitir a alteração, mas a API pode retornar o valor anterior do estoque. Esse comportamento pode indicar uma inconsistência na API.

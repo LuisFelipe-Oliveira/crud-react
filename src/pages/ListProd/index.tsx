@@ -111,7 +111,7 @@ export const ListProd: React.FC = () => {
                   </button>
 
                   {/* Botão de Excluir */}
-                  <button className="btn btn-danger btn-sm" onClick={() => handleDelete(product.id)}>
+                  <button className="btn btn-danger btn-sm" onClick={() => handleDelete(product.id)} aria-label="excluir">
                     <i className="bi bi-trash"></i>
                   </button>
                 </td>

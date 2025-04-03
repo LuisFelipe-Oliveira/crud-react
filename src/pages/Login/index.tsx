@@ -64,6 +64,7 @@ const Login: React.FC = () => {
           <FormInput
             type="text"
             name="email"
+            id="email"
             value={formData.email}
             htmlFor="email"
             nameLabel="E-mail"
@@ -74,6 +75,7 @@ const Login: React.FC = () => {
           <FormInput
             type="password"
             name="password"
+            id="password"
             value={formData.password}
             htmlFor="password"
             nameLabel="Senha"
